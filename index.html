@@ -12,15 +12,14 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<style>
-html{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-[hidden]{display:none!important}
-img{max-width:100%}
-</style>
 <title>ختمتي</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Reem+Kufi:wght@500;600;700&display=swap">
 <style>
-/* Layout: one narrow column. A deep-teal block for today's reading leads, then progress, then juz grid and day calendar in one panel. */
+html { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+[hidden] { display: none !important; }
+img { max-width: 100%; }
+
+/* Layout: one narrow column. Greeting + streak, today's three tasks on a deep-teal card, khatma countdown, week strip, juz grid, settings. */
 :root {
   --bg: #EDF3F1;
   --surface: #F8FBFA;
@@ -36,206 +35,202 @@ img{max-width:100%}
   --hero-gold: #F0CC73;
   --on-gold: #2B2208;
   --warn: #9A4B2E;
+  --warn-bg: #F4E3DA;
   --display: "Reem Kufi", "Segoe UI", Tahoma, sans-serif;
   --body: "IBM Plex Sans Arabic", "Segoe UI", Tahoma, Arial, sans-serif;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0A1715;
-    --surface: #10231F;
-    --ink: #E3EFEC;
-    --muted: #93B0AA;
-    --line: #23403B;
-    --accent: #3FB5A6;
-    --on-accent: #06201C;
-    --accent-soft: #1F4D47;
-    --hero-bg: #0F4B45;
-    --warn: #E39A78;
-    color-scheme: dark;
+    --bg: #0A1715; --surface: #10231F; --ink: #E3EFEC; --muted: #93B0AA; --line: #23403B;
+    --accent: #3FB5A6; --on-accent: #06201C; --accent-soft: #1F4D47; --hero-bg: #0F4B45;
+    --warn: #E39A78; --warn-bg: #3A2A22; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #0A1715;
-  --surface: #10231F;
-  --ink: #E3EFEC;
-  --muted: #93B0AA;
-  --line: #23403B;
-  --accent: #3FB5A6;
-  --on-accent: #06201C;
-  --accent-soft: #1F4D47;
-  --hero-bg: #0F4B45;
-  --warn: #E39A78;
-  color-scheme: dark;
+  --bg: #0A1715; --surface: #10231F; --ink: #E3EFEC; --muted: #93B0AA; --line: #23403B;
+  --accent: #3FB5A6; --on-accent: #06201C; --accent-soft: #1F4D47; --hero-bg: #0F4B45;
+  --warn: #E39A78; --warn-bg: #3A2A22; color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
 body {
-  margin: 0;
-  direction: rtl;
-  background: var(--bg);
-  color: var(--ink);
+  margin: 0; direction: rtl; background: var(--bg); color: var(--ink);
   font: 400 16px/1.7 var(--body);
   padding-block: 20px 44px;
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
 }
-button, input { font: inherit; color: inherit; }
+button, input, select { font: inherit; color: inherit; }
 button { cursor: pointer; }
 :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 .hero :focus-visible { outline-color: var(--hero-gold); }
-
-.app { max-width: 560px; margin-inline: auto; display: grid; gap: 22px; }
-.app > * { min-width: 0; }
-
-.top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-.top h1 { margin: 0; font: 700 30px/1.2 var(--display); color: var(--accent); }
-.top .dates { font-size: 13px; color: var(--muted); text-align: start; }
-
-h2 { margin: 0 0 10px; font: 600 18px/1.4 var(--display); }
+.app { max-width: 560px; margin-inline: auto; display: grid; gap: 20px; }
+.app > *, .stack > * { min-width: 0; }
+.stack { display: grid; gap: 20px; }
+h1, h2 { margin: 0; }
+h2 { font: 600 18px/1.4 var(--display); margin-bottom: 10px; }
 .muted { color: var(--muted); }
 .small { font-size: 13px; }
 
-/* hero */
-.hero {
-  position: relative; overflow: hidden;
-  background: var(--hero-bg); color: var(--hero-ink);
-  border-radius: 22px; padding: 22px 20px 20px;
-  display: grid; gap: 14px;
-}
-.hero > * { position: relative; z-index: 1; min-width: 0; }
-.hero .star {
-  position: absolute; z-index: 0; inset-block-start: -46px; inset-inline-end: -46px;
-  width: 190px; height: 190px; opacity: .13; color: var(--hero-ink);
-}
-.eyebrow { font-size: 13px; letter-spacing: .04em; color: var(--hero-sub); }
-.wird { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
-.wird .big { font: 700 76px/1.05 var(--display); color: var(--hero-gold); }
-.wird .unit { font: 600 20px/1.3 var(--display); }
-.range { font-size: 17px; font-weight: 500; }
-.sub { font-size: 14px; color: var(--hero-sub); }
-.chips { display: flex; flex-wrap: wrap; gap: 8px; }
-.chip { background: rgba(255,255,255,.11); border-radius: 999px; padding: 3px 12px; font-size: 14px; white-space: nowrap; }
-.chip b { font-weight: 600; color: var(--hero-gold); }
-.hero.done .chips { opacity: .6; }
-.btn {
-  border: 0; border-radius: 14px; padding: 12px 18px; font-weight: 600; font-size: 17px;
-  min-height: 48px; width: 100%;
-}
+/* top */
+.top { display: flex; justify-content: space-between; align-items: center; gap: 14px; }
+.top .hello { font-size: 14px; color: var(--muted); }
+.top h1 { font: 700 28px/1.25 var(--display); color: var(--accent); overflow-wrap: anywhere; }
+.top .dates { font-size: 13px; color: var(--muted); }
+.streak { flex: none; text-align: center; border: 1.5px solid var(--hero-gold); border-radius: 18px; padding: 6px 14px; background: var(--surface); min-width: 86px; }
+.streak b { display: block; font: 700 30px/1.1 var(--display); color: var(--accent); }
+.streak span { font-size: 12px; color: var(--muted); display: block; line-height: 1.4; }
+.streak.zero b { color: var(--muted); }
+
+.banner { border-radius: 14px; padding: 12px 14px; font-size: 15px; background: var(--accent-soft); }
+.banner.warn { background: var(--warn-bg); color: var(--warn); font-weight: 500; }
+
+/* hero / tasks */
+.hero { background: var(--hero-bg); color: var(--hero-ink); border-radius: 22px; padding: 18px 14px 14px; display: grid; gap: 12px; }
+.hero > * { min-width: 0; }
+.hero-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; padding-inline: 6px; }
+.eyebrow { font: 600 19px/1.4 var(--display); }
+.eyebrow small { font: 400 13px var(--body); color: var(--hero-sub); margin-inline-start: 6px; }
+.rule { font-size: 13px; color: var(--hero-sub); }
+.task { background: rgba(255,255,255,.09); border-radius: 16px; padding: 14px; display: grid; gap: 8px; }
+.task > * { min-width: 0; }
+.task.done { background: rgba(240,204,115,.14); }
+.t-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.t-name { font: 600 20px/1.3 var(--display); }
+.tag { font-size: 12px; border-radius: 999px; padding: 1px 10px; border: 1px solid var(--hero-sub); color: var(--hero-sub); }
+.tag.req { background: var(--hero-gold); border-color: var(--hero-gold); color: var(--on-gold); font-weight: 600; }
+.t-ok { margin-inline-start: auto; font-weight: 600; color: var(--hero-gold); font-size: 15px; }
+.t-range { font: 700 24px/1.3 var(--display); color: var(--hero-gold); }
+.t-sub { font-size: 14px; color: var(--hero-sub); }
+.t-empty { font-size: 14px; color: var(--hero-sub); }
+.steps { display: grid; gap: 10px; border-top: 1px solid rgba(255,255,255,.16); padding-top: 10px; }
+.step { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.s-label { font-size: 15px; font-weight: 500; }
+.dots { display: flex; gap: 8px; }
+.dot { width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--hero-gold); background: transparent; color: var(--hero-gold); font: 600 17px var(--display); padding: 0; }
+.dot.on { background: var(--hero-gold); color: var(--on-gold); }
+.dot:disabled { opacity: .35; cursor: not-allowed; }
+.btn { border: 0; border-radius: 14px; padding: 12px 18px; font-weight: 600; font-size: 17px; min-height: 48px; width: 100%; }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
 .btn-gold { background: var(--hero-gold); color: var(--on-gold); }
-.btn-gold:active { filter: brightness(.94); }
-.btn-ghost { background: transparent; border: 1.5px solid var(--hero-sub); color: var(--hero-ink); }
 .btn-accent { background: var(--accent); color: var(--on-accent); }
 .btn-plain { background: transparent; border: 1.5px solid var(--line); color: var(--ink); }
-.linkbtn { background: none; border: 0; padding: 6px 2px; color: var(--hero-sub); text-decoration: underline; font-size: 14px; }
+.hint-line { font-size: 13px; color: var(--hero-sub); text-align: center; }
+.linkbtn { background: none; border: 0; padding: 6px 2px; color: var(--hero-sub); text-decoration: underline; font-size: 14px; justify-self: start; }
 .linkbtn.dark { color: var(--muted); }
-.manual { border-top: 1px solid rgba(255,255,255,.18); padding-top: 12px; }
-.manual summary { cursor: pointer; font-size: 14px; color: var(--hero-sub); }
-.manual .row { display: flex; gap: 8px; margin-top: 10px; }
-.manual input { flex: 1; min-width: 0; border-radius: 12px; border: 1.5px solid var(--hero-sub); background: rgba(255,255,255,.08); padding: 10px 12px; color: var(--hero-ink); }
-.manual .btn { width: auto; min-height: 44px; font-size: 15px; }
 
-/* progress */
-.progress .head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
-.progress .pct { font: 700 34px/1.1 var(--display); color: var(--accent); }
-.bar { height: 12px; border-radius: 8px; background: var(--accent-soft); overflow: hidden; margin-block: 8px 12px; }
+/* cards */
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 18px 16px; }
+.count { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.count .num { font: 700 46px/1.1 var(--display); color: var(--accent); }
+.count .lbl { font: 600 18px var(--display); }
+.pill { display: inline-block; border-radius: 999px; padding: 2px 12px; font-size: 14px; font-weight: 500; background: var(--accent-soft); }
+.pill.behind { background: var(--warn-bg); color: var(--warn); }
+.bar { height: 12px; border-radius: 8px; background: var(--accent-soft); overflow: hidden; margin-block: 12px 6px; }
 .bar > i { display: block; height: 100%; background: var(--accent); border-radius: 8px; transition: width .5s ease; }
-.status { font-weight: 500; }
-.status.behind { color: var(--warn); }
 .stats { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 14px; border-block: 1px solid var(--line); }
-.stats > div { padding: 10px 8px; text-align: center; }
+.stats > div { padding: 10px 6px; text-align: center; }
 .stats > div + div { border-inline-start: 1px solid var(--line); }
-.stats b { display: block; font: 600 22px/1.3 var(--display); }
-.stats span { font-size: 13px; color: var(--muted); }
-
-/* panel */
-.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 18px 16px; display: grid; gap: 22px; }
-.panel > * { min-width: 0; }
-.panel section + section { border-top: 1px solid var(--line); padding-top: 20px; }
+.stats b { display: block; font: 600 21px/1.3 var(--display); }
+.stats span { font-size: 12.5px; color: var(--muted); }
+.week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
+.wd { text-align: center; border-radius: 12px; padding: 7px 2px 6px; border: 1px solid var(--line); font-size: 12px; color: var(--muted); display: grid; gap: 2px; min-width: 0; }
+.wd b { font: 600 17px/1.2 var(--display); }
+.wd.ok { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.wd.missed { border-style: dashed; }
+.wd.today { outline: 2.5px solid var(--hero-gold); outline-offset: 1px; color: var(--ink); }
+.wd.today.ok { color: var(--on-accent); }
+.wd.future { opacity: .6; }
 .juz { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; }
-.juz div {
-  aspect-ratio: 1; display: grid; place-items: center; border-radius: 8px; font-size: 12px; font-weight: 500;
-  background-color: transparent; border: 1px solid var(--line); color: var(--muted);
-  font-variant-numeric: tabular-nums;
-}
+.juz div { aspect-ratio: 1; display: grid; place-items: center; border-radius: 8px; font-size: 12px; font-weight: 500; border: 1px solid var(--line); color: var(--muted); font-variant-numeric: tabular-nums; }
 .juz div.part { background-image: linear-gradient(to left, var(--accent-soft) var(--p), transparent var(--p)); color: var(--ink); }
 .juz div.full { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
-.cal { display: grid; grid-template-columns: repeat(auto-fill, minmax(34px, 1fr)); gap: 5px; }
-.cal div { height: 34px; display: grid; place-items: center; border-radius: 9px; font-size: 12px; border: 1px solid var(--line); color: var(--muted); font-variant-numeric: tabular-nums; }
-.cal .read { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 600; }
-.cal .missed { border-style: dashed; }
-.cal .today { outline: 2.5px solid var(--hero-gold); outline-offset: 1px; color: var(--ink); }
-.cal .today.read { color: var(--on-accent); }
-.cal .future { opacity: .55; }
-.legend { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 10px; font-size: 13px; color: var(--muted); }
-.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 4px; margin-inline-end: 6px; vertical-align: -1px; border: 1px solid var(--line); }
-.legend .l-read { background: var(--accent); border-color: var(--accent); }
-.legend .l-missed { border-style: dashed; }
-
-/* setup */
-.setup { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 20px 18px; display: grid; gap: 18px; }
-.setup > * { min-width: 0; }
-.setup h2 { font-size: 22px; margin: 0; }
-.field { display: grid; gap: 8px; }
-.field label, .field .lbl { font-weight: 600; font-size: 15px; }
-.presets { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-.preset { border: 1.5px solid var(--line); background: transparent; border-radius: 14px; padding: 10px 12px; text-align: start; min-height: 58px; }
-.preset b { display: block; font: 600 19px/1.3 var(--display); }
-.preset span { font-size: 13px; color: var(--muted); }
-.preset[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
-.inp { width: 100%; border: 1.5px solid var(--line); background: var(--bg); border-radius: 12px; padding: 11px 12px; min-height: 48px; }
-.inp:focus { border-color: var(--accent); }
-.preview { background: var(--bg); border-radius: 14px; padding: 12px 14px; font-size: 15px; }
-.preview b { font-family: var(--display); font-size: 20px; color: var(--accent); }
-.err { color: var(--warn); font-size: 14px; min-height: 1.4em; }
-.foot { text-align: center; display: grid; gap: 4px; justify-items: center; }
+.rowbtns { display: grid; gap: 8px; margin-top: 10px; }
+.rowbtns .btn { font-size: 16px; min-height: 46px; }
+.note { font-size: 13px; color: var(--muted); margin: 6px 0 0; }
+.foot { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; align-items: center; }
 .confirm { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; align-items: center; font-size: 14px; }
 .confirm .btn { width: auto; min-height: 40px; font-size: 14px; padding: 8px 14px; }
 
+/* form */
+.form { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 20px 16px; display: grid; gap: 16px; }
+.form > * { min-width: 0; }
+.form h1 { font: 700 28px/1.3 var(--display); color: var(--accent); }
+.lead { margin: 0; color: var(--muted); font-size: 15px; }
+.field { display: grid; gap: 6px; }
+.field > label, .field .sublbl { font-weight: 600; font-size: 15px; }
+.field .sublbl { font-weight: 500; margin-top: 6px; }
+.inp { width: 100%; border: 1.5px solid var(--line); background: var(--bg); border-radius: 12px; padding: 10px 12px; min-height: 46px; }
+.inp:focus { border-color: var(--accent); }
+.hint { font-size: 13px; color: var(--muted); }
+.three { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; }
+.adv summary { cursor: pointer; font-size: 14px; color: var(--muted); }
+.adv .field { margin-top: 10px; }
+.preview { background: var(--bg); border-radius: 14px; padding: 12px 14px; font-size: 15px; }
+.preview b { font-family: var(--display); font-size: 19px; color: var(--accent); }
+.err { color: var(--warn); font-size: 14px; min-height: 1.4em; }
+
 @media (max-width: 380px) {
-  .wird .big { font-size: 64px; }
+  .t-range { font-size: 21px; }
   .juz div { font-size: 11px; border-radius: 6px; }
+  .wd { font-size: 11px; }
 }
 @media (prefers-reduced-motion: reduce) { .bar > i { transition: none; } }
 </style>
-
 </head>
 <body>
-<div class="app" dir="rtl" lang="ar">
-  <header class="top">
-    <h1>ختمتي</h1>
-    <div class="dates" id="dates"></div>
-  </header>
+<div class="app">
+  <div class="stack" id="home" hidden></div>
 
-  <main id="main"></main>
+  <form class="form" id="form" novalidate hidden>
+    <h1 id="formTitle">ختمتي</h1>
+    <p class="lead" id="formLead"></p>
 
-  <form class="setup" id="setup" hidden novalidate>
-    <h2 id="setupTitle">خطة ختم جديدة</h2>
     <div class="field">
-      <span class="lbl" id="durLbl">مدة الختمة</span>
-      <div class="presets" role="group" aria-labelledby="durLbl" id="presets">
-        <button type="button" class="preset" data-days="30"><b>٣٠ يومًا</b><span>جزء كل يوم تقريبًا</span></button>
-        <button type="button" class="preset" data-days="60"><b>٦٠ يومًا</b><span>جزء كل يومين</span></button>
-        <button type="button" class="preset" data-days="90"><b>٩٠ يومًا</b><span>ثلاثة أشهر</span></button>
-        <button type="button" class="preset" data-days="180"><b>١٨٠ يومًا</b><span>ستة أشهر</span></button>
+      <label for="fName">اسمك</label>
+      <input class="inp" id="fName" type="text" maxlength="30" autocomplete="given-name" placeholder="مثال: عبدالرحمن">
+    </div>
+
+    <div class="field">
+      <label for="fLast">آخر صفحة حفظتها</label>
+      <input class="inp" id="fLast" type="number" inputmode="numeric" min="0" max="603" value="0">
+      <span class="hint">اكتب ٠ إذا لم تبدأ الحفظ. الترقيم حسب مصحف المدينة (٦٠٤ صفحة).</span>
+      <label class="sublbl" for="fSurah">أو اختر السورة اللي بتبدأ منها</label>
+      <select class="inp" id="fSurah"></select>
+      <span class="hint" id="fWhere"></span>
+    </div>
+
+    <div class="three">
+      <div class="field">
+        <label for="fPer">الحفظ في اليوم</label>
+        <input class="inp" id="fPer" type="number" inputmode="numeric" min="1" max="20" value="1">
+        <span class="hint">صفحات</span>
+      </div>
+      <div class="field">
+        <label for="fRev">المراجعة في اليوم</label>
+        <input class="inp" id="fRev" type="number" inputmode="numeric" min="0" max="60" value="5">
+        <span class="hint">صفحات من محفوظك القديم</span>
+      </div>
+      <div class="field">
+        <label for="fRabt">الربط في اليوم</label>
+        <input class="inp" id="fRabt" type="number" inputmode="numeric" min="0" max="60" value="3">
+        <span class="hint">آخر صفحات حفظتها</span>
       </div>
     </div>
-    <div class="field">
-      <label for="daysInput">أو حدّد عدد الأيام بنفسك</label>
-      <input class="inp" id="daysInput" type="number" inputmode="numeric" min="3" max="365" value="30">
-    </div>
-    <div class="field">
-      <label for="startInput">تاريخ البداية</label>
-      <input class="inp" id="startInput" type="date">
-    </div>
-    <div class="field">
-      <label for="pageInputSetup">وصلت إلى صفحة</label>
-      <input class="inp" id="pageInputSetup" type="number" inputmode="numeric" min="0" max="603" value="0">
-      <span class="small muted">اتركها ٠ إذا تبدأ من أول المصحف. الترقيم حسب مصحف المدينة (٦٠٤ صفحة).</span>
-    </div>
+
+    <details class="adv">
+      <summary>إعدادات متقدمة</summary>
+      <div class="field">
+        <label for="fStart">أول صفحة بدأت منها الحفظ</label>
+        <input class="inp" id="fStart" type="number" inputmode="numeric" min="1" max="604" value="1">
+        <span class="hint">المراجعة والربط يؤخذان من الصفحات بين هذي الصفحة وآخر صفحة حفظتها. اتركها ١ إذا بدأت من أول المصحف.</span>
+      </div>
+    </details>
+
     <div class="preview" id="preview" aria-live="polite"></div>
-    <div class="err" id="setupErr" role="alert"></div>
-    <button type="submit" class="btn btn-accent" id="startBtn">ابدأ الخطة</button>
-    <button type="button" class="btn btn-plain" id="cancelSetup" hidden>رجوع</button>
+    <div class="err" id="formErr" role="alert"></div>
+    <button type="submit" class="btn btn-accent" id="formBtn">ابدأ الخطة</button>
+    <button type="button" class="btn btn-plain" id="formCancel" hidden>رجوع</button>
   </form>
 </div>
 
@@ -243,9 +238,9 @@ h2 { margin: 0 0 10px; font: 600 18px/1.4 var(--display); }
 (function () {
   "use strict";
 
-  var TOTAL = 604;
-  var JUZ_START = [1,22,42,62,82,102,122,142,162,182,202,222,242,262,282,302,322,342,362,382,402,422,442,462,482,502,522,542,562,582];
-  var SURAHS = [
+  const TOTAL = 604, KEY = "khatma:v2", NOTIFY_HOUR = 17, DAY_MS = 86400000;
+  const JUZ_START = [1,22,42,62,82,102,122,142,162,182,202,222,242,262,282,302,322,342,362,382,402,422,442,462,482,502,522,542,562,582];
+  const SURAHS = [
     ["الفاتحة",1],["البقرة",2],["آل عمران",50],["النساء",77],["المائدة",106],["الأنعام",128],["الأعراف",151],["الأنفال",177],["التوبة",187],["يونس",208],
     ["هود",221],["يوسف",235],["الرعد",249],["إبراهيم",255],["الحجر",262],["النحل",267],["الإسراء",282],["الكهف",293],["مريم",305],["طه",312],
     ["الأنبياء",322],["الحج",332],["المؤمنون",342],["النور",350],["الفرقان",359],["الشعراء",367],["النمل",377],["القصص",385],["العنكبوت",396],["الروم",404],
@@ -259,358 +254,462 @@ h2 { margin: 0 0 10px; font: 600 18px/1.4 var(--display); }
     ["القارعة",600],["التكاثر",600],["العصر",601],["الهمزة",601],["الفيل",601],["قريش",602],["الماعون",602],["الكوثر",602],["الكافرون",603],["النصر",603],
     ["المسد",603],["الإخلاص",604],["الفلق",604],["الناس",604]
   ];
-  var PRAYERS = ["الفجر","الظهر","العصر","المغرب","العشاء"];
-  var KEY = "khatma:v1";
-  var DAY_MS = 86400000;
+  const DAYS = ["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+  const DAYS_SHORT = ["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
 
-  var S = { plan: null, page: 0, log: {}, updated: 0 };
-  var dbRef = null, remoteOk = false, writing = false, writeTimer = null, dirty = false;
-  var setupDays = 30;
+  let S = null, view = "home", formMode = "new", confirmReset = false, notifMsg = "", shownKey = "";
+  const $ = (id) => document.getElementById(id);
 
   /* ---------- helpers ---------- */
-  function ad(v) { return String(v).replace(/\d/g, function (d) { return "٠١٢٣٤٥٦٧٨٩".charAt(d); }); }
-  function pad(n) { return (n < 10 ? "0" : "") + n; }
-  function isoOf(d) { return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
-  function parseIso(s) { var p = s.split("-"); return Date.UTC(+p[0], +p[1] - 1, +p[2]); }
-  function diffDays(a, b) { return Math.round((parseIso(a) - parseIso(b)) / DAY_MS); }
-  function addDays(s, n) { var t = new Date(parseIso(s) + n * DAY_MS); return t.getUTCFullYear() + "-" + pad(t.getUTCMonth() + 1) + "-" + pad(t.getUTCDate()); }
+  const ad = (v) => String(v).replace(/\d/g, (d) => "٠١٢٣٤٥٦٧٨٩".charAt(d));
+  const pad = (n) => (n < 10 ? "0" : "") + n;
+  const isoOf = (d) => d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+  const parseIso = (s) => { const p = s.split("-"); return Date.UTC(+p[0], +p[1] - 1, +p[2]); };
+  const diffDays = (a, b) => Math.round((parseIso(a) - parseIso(b)) / DAY_MS);
+  const addDays = (s, n) => { const t = new Date(parseIso(s) + n * DAY_MS); return t.getUTCFullYear() + "-" + pad(t.getUTCMonth() + 1) + "-" + pad(t.getUTCDate()); };
+  const dow = (s) => new Date(parseIso(s)).getUTCDay();
+  const hifzRequired = (s) => dow(s) <= 3;            // الأحد إلى الأربعاء
+  const clampInt = (v, a, b) => { v = Math.round(+v); if (isNaN(v)) v = a; return Math.min(b, Math.max(a, v)); };
+  const esc = (s) => String(s).replace(/[&<>"']/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]));
   function fmtDate(s, cal) {
-    try {
-      return ad(new Date(parseIso(s)).toLocaleDateString("ar-SA-u-ca-" + cal, { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }));
-    } catch (e) { return ad(s); }
+    try { return ad(new Date(parseIso(s)).toLocaleDateString("ar-SA-u-ca-" + cal, { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })); }
+    catch (e) { return ad(s); }
   }
-  function pagesW(n) {
-    if (n === 0) return "لا صفحات";
-    if (n === 1) return "صفحة واحدة";
-    if (n === 2) return "صفحتان";
-    if (n <= 10) return ad(n) + " صفحات";
-    return ad(n) + " صفحة";
+  function pagesW(n) { if (n === 1) return "صفحة واحدة"; if (n === 2) return "صفحتان"; if (n >= 3 && n <= 10) return ad(n) + " صفحات"; return ad(n) + " صفحة"; }
+  function daysW(n) { if (n === 0) return "٠ يوم"; if (n === 1) return "يوم واحد"; if (n === 2) return "يومان"; if (n <= 10) return ad(n) + " أيام"; return ad(n) + " يومًا"; }
+  function weeksW(n) { if (n === 1) return "أسبوع"; if (n === 2) return "أسبوعان"; if (n <= 10) return ad(n) + " أسابيع"; return ad(n) + " أسبوعًا"; }
+  function surahAt(p) { let n = SURAHS[0][0]; for (const s of SURAHS) { if (s[1] <= p) n = s[0]; else break; } return n; }
+  function juzOf(p) { let j = 1; for (let i = 0; i < 30; i++) { if (JUZ_START[i] <= p) j = i + 1; else break; } return j; }
+  const rangeLong = (r) => r[0] === r[1] ? "صفحة " + ad(r[0]) : "من صفحة " + ad(r[0]) + " إلى " + ad(r[1]);
+  const rangeShort = (r) => r[0] === r[1] ? "ص " + ad(r[0]) : "ص " + ad(r[0]) + "–" + ad(r[1]);
+  function whereTxt(r) {
+    const a = surahAt(r[0]), b = surahAt(r[1]);
+    const s = a === b ? "سورة " + a : "من سورة " + a + " إلى سورة " + b;
+    const ja = juzOf(r[0]), jb = juzOf(r[1]);
+    return s + " · " + (ja === jb ? "الجزء " + ad(ja) : "الجزء " + ad(ja) + " – " + ad(jb));
   }
-  function daysW(n) {
-    if (n === 0) return "لا أيام";
-    if (n === 1) return "يوم واحد";
-    if (n === 2) return "يومان";
-    if (n <= 10) return ad(n) + " أيام";
-    return ad(n) + " يومًا";
-  }
-  function surahAt(p) {
-    var name = SURAHS[0][0];
-    for (var i = 0; i < SURAHS.length; i++) { if (SURAHS[i][1] <= p) name = SURAHS[i][0]; else break; }
-    return name;
-  }
-  function juzOf(p) {
-    var j = 1;
-    for (var i = 0; i < JUZ_START.length; i++) { if (JUZ_START[i] <= p) j = i + 1; else break; }
-    return j;
-  }
-  function chunks(a, b, n) {
-    var total = b - a + 1, out = [], cur = a;
-    for (var i = 0; i < n; i++) {
-      var size = Math.floor(total / n) + (i < total % n ? 1 : 0);
-      if (size > 0) out.push([cur, cur + size - 1]); else out.push(null);
-      cur += size;
-    }
-    return out;
-  }
-  function rangeTxt(r) { return r[0] === r[1] ? ad(r[0]) : ad(r[0]) + "–" + ad(r[1]); }
-  function $(id) { return document.getElementById(id); }
 
   /* ---------- storage ---------- */
+  function blank() { return { profile: null, plan: null, revPtr: 1, log: {}, notif: { on: false, last: "" }, updated: 0 }; }
   function normalize(o) {
-    var r = { plan: null, page: 0, log: {}, updated: 0 };
+    const r = blank();
     if (!o || typeof o !== "object") return r;
-    r.updated = +o.updated || 0;
-    if (o.plan && o.plan.start && o.plan.days) {
-      r.plan = { start: String(o.plan.start), days: +o.plan.days, startPage: Math.max(0, +o.plan.startPage || 0) };
+    const p = o.profile;
+    if (p && typeof p === "object") {
+      r.profile = {
+        name: String(p.name || "").slice(0, 30), last: clampInt(p.last, 0, TOTAL), start: clampInt(p.start, 1, TOTAL),
+        perDay: clampInt(p.perDay, 1, 20), rev: clampInt(p.rev, 0, 60), rabt: clampInt(p.rabt, 0, 60),
+        created: /^\d{4}-\d\d-\d\d$/.test(p.created || "") ? p.created : isoOf(new Date())
+      };
     }
-    r.page = Math.min(TOTAL, Math.max(0, +o.page || 0));
+    if (r.profile && o.plan && /^\d{4}-\d\d-\d\d$/.test(o.plan.start || "")) r.plan = { start: o.plan.start, base: clampInt(o.plan.base, 0, TOTAL) };
+    if (r.profile && !r.plan) r.plan = { start: r.profile.created, base: r.profile.last };
+    r.revPtr = clampInt(o.revPtr, 1, TOTAL);
     if (o.log && typeof o.log === "object") {
-      Object.keys(o.log).forEach(function (k) { var v = +o.log[k]; if (v > 0) r.log[k] = v; });
+      Object.keys(o.log).forEach((k) => { if (/^\d{4}-\d\d-\d\d$/.test(k) && o.log[k] && typeof o.log[k] === "object") r.log[k] = o.log[k]; });
     }
+    if (o.notif && typeof o.notif === "object") r.notif = { on: !!o.notif.on, last: String(o.notif.last || "") };
     return r;
   }
-  function readLocal() {
-    try { var raw = localStorage.getItem(KEY); if (raw) S = normalize(JSON.parse(raw)); } catch (e) {}
-  }
-  function writeLocal() {
-    try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {}
-  }
+  function load() { try { const raw = localStorage.getItem(KEY); S = normalize(raw ? JSON.parse(raw) : null); } catch (e) { S = blank(); } }
   function persist() {
     S.updated = Date.now();
-    writeLocal();
-    queueRemote();
+    try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {}
+    snapshot();
   }
-  function queueRemote() {
-    if (!dbRef) return;
-    dirty = true;
-    clearTimeout(writeTimer);
-    writeTimer = setTimeout(flushRemote, 700);
-  }
-  function flushRemote() {
-    if (!dbRef || writing || !dirty) return;
-    writing = true; dirty = false;
-    dbRef.set(JSON.parse(JSON.stringify(S))).then(function () {
-      remoteOk = true; writing = false; updateFoot();
-      if (dirty) flushRemote();
-    }, function () {
-      remoteOk = false; writing = false; updateFoot();
-    });
-  }
-  function updateFoot() {
-    var el = $("saveNote");
-    if (el) el.textContent = remoteOk ? "يُحفظ تقدمك تلقائيًا في حسابك" : "يُحفظ تقدمك تلقائيًا في هذا المتصفح";
+  function snapshot() {
+    try {
+      if (!("caches" in window) || !S.profile) return;
+      const c = compute(), st = streakInfo(c);
+      const data = { on: !!S.notif.on, name: S.profile.name, date: c.today, ok: c.ok, streak: st.cur, notified: S.notif.last };
+      caches.open("khatma-state").then((ch) => ch.put(new URL("state.json", location.href).href,
+        new Response(JSON.stringify(data), { headers: { "Content-Type": "application/json" } }))).catch(() => {});
+    } catch (e) {}
   }
 
-  /* ---------- computing ---------- */
+  /* ---------- plan logic ---------- */
+  function estimate(last, per, fromIso) {
+    const sessions = Math.ceil((TOTAL - last) / per);
+    if (sessions <= 0) return { done: true, sessions: 0 };
+    let d = fromIso, c = 0;
+    for (let g = 0; g < 4000; g++) {
+      if (hifzRequired(d)) { c++; if (c >= sessions) return { done: false, sessions, date: d }; }
+      d = addDays(d, 1);
+    }
+    return { done: false, sessions, date: d };
+  }
+
   function compute() {
-    var p = S.plan, today = isoOf(new Date());
-    var idx = diffDays(today, p.start);
-    var todayRead = idx >= 0 ? (S.log[today] || 0) : 0;
-    var startToday = Math.max(0, S.page - todayRead);
-    var effIdx = Math.max(0, idx);
-    var remainingDays = Math.max(1, p.days - effIdx);
-    var wird = Math.max(0, Math.ceil((TOTAL - startToday) / remainingDays));
-    var end = Math.min(TOTAL, startToday + wird);
-    var base;
-    if (idx <= 0) base = p.startPage;
-    else if (idx >= p.days) base = TOTAL;
-    else base = p.startPage + Math.ceil((TOTAL - p.startPage) * idx / p.days);
-    var streak = 0, d = today;
-    if (!(S.log[d] > 0)) d = addDays(d, -1);
-    while (S.log[d] > 0) { streak++; d = addDays(d, -1); }
-    return {
-      today: today, idx: idx, todayRead: todayRead, startToday: startToday,
-      remainingDays: remainingDays, wird: wird, end: end,
-      done: S.page >= end && S.page > startToday || S.page >= TOTAL,
-      diff: startToday - base, streak: streak, finished: S.page >= TOTAL
-    };
+    const p = S.profile, today = isoOf(new Date()), L = S.log[today] || {};
+    const hDone = !!L.h, hp = hDone ? (L.hp || 0) : 0;
+    const startToday = Math.max(0, p.last - hp);
+    const hPages = hDone ? hp : Math.min(p.perDay, TOTAL - startToday);
+    const c = { today, L, dow: dow(today), startToday };
+    c.hifz = hPages > 0 ? [startToday + 1, startToday + hPages] : null;
+    c.hReq = hifzRequired(today) && !!c.hifz;
+
+    let rabt = null, poolEnd = startToday;
+    if (p.rabt > 0 && startToday >= p.start) {
+      const from = Math.max(p.start, startToday - p.rabt + 1);
+      rabt = [from, startToday]; poolEnd = from - 1;
+    }
+    c.rabt = rabt; c.poolEnd = poolEnd;
+
+    let rev = null;
+    if (L.v && L.vr) rev = L.vr;
+    else if (p.rev > 0 && poolEnd >= p.start) {
+      let ptr = S.revPtr; if (ptr < p.start || ptr > poolEnd) ptr = p.start;
+      rev = [ptr, Math.min(poolEnd, ptr + p.rev - 1)];
+    }
+    c.rev = rev;
+    c.vReq = !!rev; c.bReq = !!rabt;
+    c.ok = (!c.hReq || hDone) && (!c.vReq || !!L.v) && (!c.bReq || !!L.b);
+    c.ready = (L.l || 0) >= 3 && (L.r || 0) >= 3;
+
+    // pace against the plan (Sun–Wed sessions only)
+    let reqBefore = 0, d = S.plan.start;
+    while (d < today) { if (hifzRequired(d)) reqBefore++; d = addDays(d, 1); }
+    const expected = Math.min(TOTAL, S.plan.base + reqBefore * p.perDay);
+    const diff = startToday - expected;
+    c.pace = diff >= 0 ? Math.floor(diff / p.perDay) : -Math.ceil(-diff / p.perDay);
+
+    const from = (hifzRequired(today) && !hDone && p.last < TOTAL) ? today : addDays(today, 1);
+    c.est = estimate(p.last, p.perDay, from);
+    c.daysLeft = c.est.done ? 0 : diffDays(c.est.date, today);
+    return c;
   }
 
-  function setPage(v) {
-    v = Math.min(TOTAL, Math.max(0, Math.round(+v) || 0));
-    var today = isoOf(new Date());
-    var delta = v - S.page;
-    var t = Math.max(0, (S.log[today] || 0) + delta);
-    if (t > 0) S.log[today] = t; else delete S.log[today];
-    S.page = v;
-    persist();
-    render();
+  function streakInfo(c) {
+    const today = c.today;
+    let cur = 0, d = c.ok ? today : addDays(today, -1);
+    while (S.log[d] && S.log[d].ok) { cur++; d = addDays(d, -1); }
+    let lost = 0; const y = addDays(today, -1);
+    if (!(S.log[y] && S.log[y].ok)) { let e = addDays(today, -2); while (S.log[e] && S.log[e].ok) { lost++; e = addDays(e, -1); } }
+    const keys = Object.keys(S.log).filter((k) => S.log[k].ok).sort();
+    let best = 0, run = 0, prev = null;
+    keys.forEach((k) => { run = (prev && diffDays(k, prev) === 1) ? run + 1 : 1; if (run > best) best = run; prev = k; });
+    return { cur, lost, best: Math.max(best, cur) };
+  }
+
+  function todayLog() { const t = isoOf(new Date()); if (!S.log[t]) S.log[t] = {}; return S.log[t]; }
+  function sync() { const c = compute(); const L = todayLog(); L.ok = c.ok; }
+
+  /* ---------- actions ---------- */
+  function act(name, el) {
+    const c = compute(), L = todayLog(), p = S.profile;
+    if (name === "step") {
+      const k = el.getAttribute("data-k"), i = +el.getAttribute("data-i"), cur = L[k] || 0;
+      if (k === "r" && (L.l || 0) < 3) return;
+      if (L.h) return;
+      if (cur === i) L[k] = i + 1;
+      else if (cur === i + 1) { L[k] = i; if (k === "l") L.r = 0; }
+    } else if (name === "doneH") {
+      if (!c.hifz || L.h || !c.ready) return;
+      const pages = c.hifz[1] - c.hifz[0] + 1;
+      L.h = true; L.hp = pages; p.last = Math.min(TOTAL, p.last + pages);
+    } else if (name === "undoH") {
+      if (!L.h) return;
+      p.last = Math.max(0, p.last - (L.hp || 0)); L.h = false; delete L.hp;
+    } else if (name === "doneV") {
+      if (!c.rev || L.v) return;
+      L.v = true; L.vr = c.rev.slice(); L.vp = S.revPtr;
+      const next = c.rev[1] + 1; S.revPtr = next > c.poolEnd ? p.start : next;
+    } else if (name === "undoV") {
+      if (!L.v) return;
+      S.revPtr = L.vp || p.start; L.v = false; delete L.vr; delete L.vp;
+    } else if (name === "doneB") { L.b = true; }
+    else if (name === "undoB") { L.b = false; }
+    sync(); persist(); render();
   }
 
   /* ---------- render ---------- */
-  var STAR = '<svg class="star" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="2.4"><rect x="16" y="16" width="68" height="68"/><rect x="16" y="16" width="68" height="68" transform="rotate(45 50 50)"/><circle cx="50" cy="50" r="12"/></g></svg>';
-
-  function heroHtml(c) {
-    var p = S.plan;
-    if (c.finished) {
-      var took = Math.max(1, diffDays(c.today, p.start) + 1);
-      return '<section class="hero done" aria-label="الختمة">' + STAR +
-        '<div class="eyebrow">ختمة مكتملة</div>' +
-        '<div class="wird"><span class="unit" style="font-size:30px">تقبّل الله منك</span></div>' +
-        '<div class="range">أتممت ختمة القرآن في ' + daysW(took) + '</div>' +
-        '<div class="sub">بدأتها في ' + fmtDate(p.start, "gregory") + '</div>' +
-        '<button type="button" class="btn btn-gold" data-act="new">ابدأ ختمة جديدة</button></section>';
-    }
-    var s = c.startToday + 1, e = c.end;
-    var sA = surahAt(s), sB = surahAt(e);
-    var surahTxt = sA === sB ? "سورة " + sA : "من سورة " + sA + " إلى سورة " + sB;
-    var jA = juzOf(s), jB = juzOf(e);
-    var juzTxt = jA === jB ? "الجزء " + ad(jA) : "الجزء " + ad(jA) + " – " + ad(jB);
-    var eyebrow;
-    if (c.idx < 0) { eyebrow = "تبدأ الخطة بعد " + daysW(-c.idx) + " · ورد اليوم الأول"; }
-    else { eyebrow = "اليوم " + ad(Math.min(c.idx + 1, p.days)) + " من " + ad(p.days); if (c.idx >= p.days) eyebrow = "تجاوزت المدة المحددة · ورد اليوم"; }
-    var unit = (c.wird >= 3 && c.wird <= 10) ? "صفحات" : "صفحة";
-    var ch = chunks(s, e, 5), chips = "";
-    for (var i = 0; i < 5; i++) { if (ch[i]) chips += '<span class="chip">' + PRAYERS[i] + ' <b>' + rangeTxt(ch[i]) + '</b></span>'; }
-    var action;
-    if (c.idx < 0) {
-      action = "";
-    } else if (c.done) {
-      action = '<button type="button" class="btn btn-ghost" disabled aria-live="polite">تم ورد اليوم ✓</button>' +
-        '<div class="sub">قرأت اليوم ' + pagesW(c.todayRead) + ' · بارك الله فيك</div>' +
-        '<button type="button" class="linkbtn" data-act="undo">تراجع عن تسجيل اليوم</button>';
-    } else {
-      action = '<button type="button" class="btn btn-gold" data-act="complete">أتممت ورد اليوم</button>';
-      if (c.todayRead > 0) action += '<div class="sub">قرأت حتى الآن ' + pagesW(c.todayRead) + '</div>';
-    }
-    var manual = c.idx < 0 ? "" :
-      '<details class="manual"><summary>سجّل الصفحة التي وصلت إليها</summary>' +
-      '<div class="row"><input id="pageInput" type="number" inputmode="numeric" min="0" max="' + TOTAL + '" value="' + S.page + '" aria-label="آخر صفحة قرأتها">' +
-      '<button type="button" class="btn btn-gold" data-act="setpage">حفظ</button></div></details>';
-    return '<section class="hero' + (c.done ? ' done' : '') + '" aria-label="ورد اليوم">' + STAR +
-      '<div class="eyebrow">' + eyebrow + '</div>' +
-      '<div class="wird"><span class="big">' + ad(c.wird) + '</span><span class="unit">' + unit + '</span></div>' +
-      '<div class="range">من صفحة ' + ad(s) + ' إلى صفحة ' + ad(e) + '</div>' +
-      '<div class="sub">' + surahTxt + ' · ' + juzTxt + '</div>' +
-      '<div class="chips" aria-label="توزيع الورد على الصلوات">' + chips + '</div>' +
-      action + manual + '</section>';
+  function stepsHtml(L) {
+    const l = L.l || 0, r = L.r || 0;
+    const dots = (k, n, locked) => [0, 1, 2].map((i) =>
+      `<button type="button" class="dot${i < n ? " on" : ""}" data-act="step" data-k="${k}" data-i="${i}" aria-pressed="${i < n}" aria-label="${k === "l" ? "سماع" : "تكرار"} ${i + 1}"${locked ? " disabled" : ""}>${ad(i + 1)}</button>`).join("");
+    return `<div class="steps">
+      <div class="step"><span class="s-label">١. اسمع من الشيخ ٣ مرات</span><div class="dots">${dots("l", l, false)}</div></div>
+      <div class="step"><span class="s-label">٢. كرّر بنفسك ٣ مرات</span><div class="dots">${dots("r", r, l < 3)}</div></div>
+    </div>`;
   }
 
-  function progressHtml(c) {
-    var p = S.plan;
-    var pct = Math.floor(S.page * 100 / TOTAL);
-    var left = TOTAL - S.page;
-    var daysLeft = Math.max(0, p.days - Math.max(0, c.idx + (c.done ? 1 : 0)));
-    var status;
-    if (c.finished) status = '<span class="status">أتممت الختمة بحمد الله</span>';
-    else if (c.idx < 0) status = '<span class="status muted">لم تبدأ الخطة بعد</span>';
-    else if (c.diff > 0) status = '<span class="status">أنت متقدم عن الخطة بـ ' + pagesW(c.diff) + '</span>';
-    else if (c.diff < 0) status = '<span class="status behind">أنت متأخر عن الخطة بـ ' + pagesW(-c.diff) + ' · وُزّع الباقي على الأيام المتبقية</span>';
-    else status = '<span class="status">أنت على الخطة تمامًا</span>';
-    var endDate = addDays(p.start, p.days - 1);
-    return '<section class="progress" aria-label="التقدم">' +
-      '<div class="head"><h2 style="margin:0">التقدم</h2><span class="pct">' + ad(pct) + '٪</span></div>' +
-      '<div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="' + TOTAL + '" aria-valuenow="' + S.page + '"><i style="width:' + (S.page * 100 / TOTAL) + '%"></i></div>' +
-      '<div>' + status + '</div>' +
-      '<div class="small muted">موعد الختم المخطط: ' + fmtDate(endDate, "islamic-umalqura") + ' · ' + fmtDate(endDate, "gregory") + '</div>' +
-      '<div class="stats">' +
-        '<div><b>' + ad(S.page) + '</b><span>من ' + ad(TOTAL) + ' صفحة</span></div>' +
-        '<div><b>' + ad(left) + '</b><span>صفحة متبقية</span></div>' +
-        '<div><b>' + ad(c.streak) + '</b><span>' + (c.streak >= 3 && c.streak <= 10 ? 'أيام متتالية' : 'يوم متتالٍ') + '</span></div>' +
-      '</div></section>';
+  function hifzHtml(c) {
+    const L = c.L;
+    if (!c.hifz) return `<div class="task done"><div class="t-head"><span class="t-name">الحفظ</span></div><div class="t-range">أتممت حفظ القرآن</div><div class="t-sub">تقبّل الله منك. استمر بالمراجعة والربط.</div></div>`;
+    const done = !!L.h, req = hifzRequired(c.today);
+    let h = `<div class="task${done ? " done" : ""}"><div class="t-head"><span class="t-name">الحفظ</span><span class="tag ${req ? "req" : "opt"}">${req ? "واجب" : "اختياري"}</span>${done ? '<span class="t-ok">تم ✓</span>' : ""}</div>
+      <div class="t-range">${rangeLong(c.hifz)}</div><div class="t-sub">${whereTxt(c.hifz)}</div>`;
+    if (!done) {
+      h += stepsHtml(L);
+      h += `<button type="button" class="btn btn-gold" data-act="doneH"${c.ready ? "" : " disabled"}>تم الحفظ</button>`;
+      if (!c.ready) h += `<div class="hint-line">أكمل السماع والتكرار أولًا، ثم سجّل الحفظ</div>`;
+    } else h += `<button type="button" class="linkbtn" data-act="undoH">تراجع عن الحفظ</button>`;
+    return h + "</div>";
+  }
+  function simpleTask(name, range, doneFlag, doneAct, undoAct, btn, emptyMsg) {
+    if (!range) return `<div class="task"><div class="t-head"><span class="t-name">${name}</span></div><div class="t-empty">${emptyMsg}</div></div>`;
+    return `<div class="task${doneFlag ? " done" : ""}"><div class="t-head"><span class="t-name">${name}</span><span class="tag req">واجب</span>${doneFlag ? '<span class="t-ok">تم ✓</span>' : ""}</div>
+      <div class="t-range">${rangeLong(range)}</div><div class="t-sub">${whereTxt(range)}</div>
+      ${doneFlag ? `<button type="button" class="linkbtn" data-act="${undoAct}">تراجع</button>` : `<button type="button" class="btn btn-gold" data-act="${doneAct}">${btn}</button>`}</div>`;
   }
 
-  function juzHtml() {
-    var cells = "";
-    for (var i = 0; i < 30; i++) {
-      var a = JUZ_START[i], b = i < 29 ? JUZ_START[i + 1] - 1 : TOTAL;
-      var read = Math.min(Math.max(S.page - a + 1, 0), b - a + 1);
-      var frac = read / (b - a + 1);
-      var cls = frac >= 1 ? "full" : (frac > 0 ? "part" : "");
-      var style = cls === "part" ? ' style="--p:' + Math.round(frac * 100) + '%"' : "";
-      cells += '<div class="' + cls + '"' + style + ' title="الجزء ' + ad(i + 1) + '">' + ad(i + 1) + '</div>';
+  function notifPanel() {
+    const sup = "Notification" in window && "serviceWorker" in navigator;
+    let body;
+    if (!sup) body = `<p class="note">هذا المتصفح ما يدعم الإشعارات من التطبيق. استخدم تذكير التقويم أدناه.</p>`;
+    else if (Notification.permission === "denied") body = `<p class="note">الإشعارات محظورة لهذا التطبيق. فعّلها من إعدادات المتصفح أو الجوال، أو استخدم تذكير التقويم.</p>`;
+    else if (S.notif.on) body = `<p class="note">التذكير مفعّل. يصلك إشعار الساعة ٥ عصرًا بورد اليوم ووضع الستريك.</p><div class="rowbtns"><button type="button" class="btn btn-plain" data-act="notifOff">إيقاف إشعارات التطبيق</button></div>`;
+    else body = `<div class="rowbtns"><button type="button" class="btn btn-accent" data-act="notifOn">فعّل إشعار الساعة ٥</button></div>`;
+    return `<section class="card"><h2>التذكير اليومي</h2>${body}
+      <div class="rowbtns"><button type="button" class="btn btn-plain" data-act="ics">أضف تذكيرًا يوميًا الساعة ٥ إلى تقويم الجوال</button></div>
+      <p class="note">إشعارات التطبيق تصل لما يكون التطبيق مفتوحًا أو لو سمح جوالك بالتحديث في الخلفية، وما يمكن ضمانها بدون سيرفر. تذكير التقويم يصلك دائمًا.</p>
+      ${notifMsg ? `<p class="note" role="status">${esc(notifMsg)}</p>` : ""}</section>`;
+  }
+
+  function homeHtml() {
+    const p = S.profile, c = compute(), st = streakInfo(c), now = new Date();
+    const late = now.getHours() >= NOTIFY_HOUR && !c.ok;
+
+    // banners
+    let banners = "";
+    if (late) {
+      const rest = [];
+      if (c.hReq && !c.L.h) rest.push("الحفظ");
+      if (c.vReq && !c.L.v) rest.push("المراجعة");
+      if (c.bReq && !c.L.b) rest.push("الربط");
+      banners += `<div class="banner warn">بقي عليك: ${rest.join("، ")}. أنجزها قبل نهاية اليوم${st.cur > 0 ? " عشان ما ينقطع ستريكك (" + daysW(st.cur) + ")" : ""}.</div>`;
     }
-    return '<section aria-label="الأجزاء"><h2>الأجزاء الثلاثون</h2><div class="juz">' + cells + '</div></section>';
-  }
+    if (st.lost > 0 && st.cur <= 1) banners += `<div class="banner">انقطع ستريكك أمس بعد ${daysW(st.lost)}. ابدأ ستريكًا جديدًا اليوم.</div>`;
 
-  function calHtml(c) {
-    var p = S.plan, cells = "";
-    for (var i = 0; i < p.days; i++) {
-      var d = addDays(p.start, i), n = S.log[d] || 0, cls;
-      if (n > 0) cls = "read";
-      else if (d < c.today) cls = "missed";
-      else if (d === c.today) cls = "";
-      else cls = "future";
-      if (d === c.today) cls += " today";
-      cells += '<div class="' + cls + '" title="' + fmtDate(d, "gregory") + (n ? " · " + pagesW(n) : "") + '">' + ad(i + 1) + '</div>';
+    // hero
+    const req = hifzRequired(c.today);
+    const hero = `<section class="hero" aria-label="ورد اليوم">
+      <div class="hero-head"><div class="eyebrow">ورد اليوم <small>${DAYS[c.dow]} · ${fmtDate(c.today, "gregory")}</small></div>
+      <div class="rule">${req ? "الحفظ واجب اليوم" : "الحفظ اختياري اليوم"} · المراجعة والربط كل يوم</div></div>
+      ${hifzHtml(c)}
+      ${simpleTask("المراجعة", c.rev, !!c.L.v, "doneV", "undoV", "تمت المراجعة", "ما عندك محفوظ قديم للمراجعة بعد. كل محفوظك داخل الربط.")}
+      ${simpleTask("الربط", c.rabt, !!c.L.b, "doneB", "undoB", "تم الربط", "ما عندك صفحات سابقة للربط بعد.")}
+      ${c.ok ? '<div class="hint-line">أنجزت ورد اليوم، بارك الله فيك</div>' : ""}
+    </section>`;
+
+    // khatma
+    const memorized = Math.max(0, p.last - p.start + 1), pct = Math.floor(p.last * 100 / TOTAL);
+    let big, sub, pill;
+    if (p.last >= TOTAL) { big = `<span class="num" style="font-size:30px">ختمت الحفظ</span>`; sub = "تقبّل الله منك"; pill = ""; }
+    else {
+      big = c.daysLeft === 0 ? `<span class="num" style="font-size:34px">اليوم</span><span class="lbl">آخر جلسة حفظ</span>` : `<span class="num">${ad(c.daysLeft)}</span><span class="lbl">يوم على الختمة</span>`;
+      sub = `تنتهي تقريبًا في ${fmtDate(c.est.date, "islamic-umalqura")} · ${fmtDate(c.est.date, "gregory")} (نحو ${weeksW(Math.max(1, Math.ceil(c.daysLeft / 7)))})`;
+      if (c.pace === 0) pill = `<span class="pill">ماشي على الخطة</span>`;
+      else if (c.pace > 0) pill = `<span class="pill">متقدم عن الخطة بـ ${daysW(c.pace)} حفظ</span>`;
+      else pill = `<span class="pill behind">متأخر عن الخطة بـ ${daysW(-c.pace)} حفظ</span>`;
     }
-    return '<section aria-label="أيام الخطة"><h2>أيام الخطة</h2><div class="cal">' + cells + '</div>' +
-      '<div class="legend"><span><i class="l-read"></i>قرأت</span><span><i class="l-missed"></i>فاتك</span><span><i></i>قادم</span></div></section>';
-  }
+    const khatma = `<section class="card" aria-label="الختمة"><h2>الختمة</h2>
+      <div class="count">${big}</div>
+      <div class="small muted">${sub}</div>
+      ${pill ? `<div style="margin-top:8px">${pill}</div>` : ""}
+      ${p.last < TOTAL && c.pace < 0 ? `<p class="note">الموعد أعلاه لو التزمت بالحفظ من الأحد إلى الأربعاء من الآن.</p>` : ""}
+      <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="${TOTAL}" aria-valuenow="${p.last}"><i style="width:${p.last * 100 / TOTAL}%"></i></div>
+      <div class="small muted">${ad(pct)}٪ من المصحف</div>
+      <div class="stats"><div><b>${ad(memorized)}</b><span>صفحة محفوظة</span></div><div><b>${ad(Math.max(0, TOTAL - p.last))}</b><span>صفحة متبقية</span></div><div><b>${ad(st.best)}</b><span>أفضل ستريك</span></div></div>
+    </section>`;
 
-  var confirming = false;
-  function footHtml() {
-    var reset = confirming
-      ? '<div class="confirm"><span>سيُمسح تقدمك الحالي. هل تريد بدء خطة جديدة؟</span>' +
-        '<button type="button" class="btn btn-accent" data-act="new">نعم، ابدأ خطة جديدة</button>' +
-        '<button type="button" class="btn btn-plain" data-act="keep">إلغاء</button></div>'
-      : '<button type="button" class="linkbtn dark" data-act="askNew">تغيير الخطة أو بدء ختمة جديدة</button>';
-    return '<div class="foot"><span class="small muted" id="saveNote"></span>' + reset + '</div>';
+    // week
+    const ws = addDays(c.today, -c.dow); let cells = "";
+    for (let i = 0; i < 7; i++) {
+      const d = addDays(ws, i), ok = S.log[d] && S.log[d].ok;
+      let cls = "";
+      if (d === c.today) cls = (c.ok ? "ok " : "") + "today";
+      else if (d > c.today) cls = "future";
+      else if (ok) cls = "ok";
+      else if (d >= p.created) cls = "missed";
+      cells += `<div class="wd ${cls}"><span>${DAYS_SHORT[i]}</span><b>${(d === c.today ? c.ok : ok) ? "✓" : (d < c.today && d >= p.created ? "–" : "·")}</b></div>`;
+    }
+    const week = `<section class="card" aria-label="هذا الأسبوع"><h2>هذا الأسبوع</h2><div class="week">${cells}</div>
+      <p class="note">الأحد إلى الأربعاء: الحفظ واجب. الخميس والجمعة والسبت: الحفظ اختياري. المراجعة والربط كل يوم. اليوم يكتمل بإنجاز كل الواجبات، ومن يفوته يوم تنقطع الستريك.</p></section>`;
+
+    // juz
+    let jc = "";
+    for (let i = 0; i < 30; i++) {
+      const a = JUZ_START[i], b = i < 29 ? JUZ_START[i + 1] - 1 : TOTAL;
+      const ov = Math.max(0, Math.min(b, p.last) - Math.max(a, p.start) + 1), fr = ov / (b - a + 1);
+      jc += `<div class="${fr >= 1 ? "full" : fr > 0 ? "part" : ""}"${fr > 0 && fr < 1 ? ` style="--p:${Math.round(fr * 100)}%"` : ""} title="الجزء ${ad(i + 1)}">${ad(i + 1)}</div>`;
+    }
+    const juz = `<section class="card" aria-label="الأجزاء"><h2>الأجزاء المحفوظة</h2><div class="juz">${jc}</div></section>`;
+
+    const foot = confirmReset
+      ? `<div class="confirm"><span>سيُمسح كل تقدمك وبياناتك. متأكد؟</span><button type="button" class="btn btn-accent" data-act="reset">نعم، امسح</button><button type="button" class="btn btn-plain" data-act="keep">إلغاء</button></div>`
+      : `<div class="foot"><button type="button" class="linkbtn dark" data-act="edit">تعديل بياناتي</button><button type="button" class="linkbtn dark" data-act="askReset">مسح البيانات</button></div>`;
+
+    return `<header class="top"><div><div class="hello">السلام عليكم</div><h1>${esc(p.name || "حياك الله")}</h1><div class="dates">${fmtDate(c.today, "islamic-umalqura")} · ${fmtDate(c.today, "gregory")}</div></div>
+      <div class="streak${st.cur === 0 ? " zero" : ""}" aria-label="الستريك"><b>${ad(st.cur)}</b><span>${st.cur === 0 ? "ابدأ ستريكك اليوم" : "ستريك يومي"}</span></div></header>
+      ${banners}${hero}${khatma}${week}${juz}${notifPanel()}${foot}`;
   }
 
   function render() {
-    var main = $("main"), setup = $("setup");
-    if (!S.plan) {
-      main.hidden = true; setup.hidden = false;
-      main.innerHTML = "";
-      return;
-    }
-    main.hidden = false; setup.hidden = true;
-    var c = compute();
-    main.innerHTML = '<div style="display:grid;gap:22px">' +
-      heroHtml(c) + progressHtml(c) +
-      '<div class="panel">' + juzHtml() + calHtml(c) + '</div>' +
-      footHtml() + '</div>';
-    updateFoot();
-    renderDates();
+    shownKey = isoOf(new Date()) + "|" + (new Date().getHours() >= NOTIFY_HOUR);
+    if (!S.profile || view === "form") { $("home").hidden = true; $("form").hidden = false; return; }
+    $("form").hidden = true; $("home").hidden = false;
+    $("home").innerHTML = homeHtml();
   }
 
-  function renderDates() {
-    var t = isoOf(new Date());
-    $("dates").textContent = fmtDate(t, "islamic-umalqura") + " · " + fmtDate(t, "gregory");
+  /* ---------- form ---------- */
+  function fillSurahs() {
+    $("fSurah").innerHTML = '<option value="">— اختر السورة —</option>' + SURAHS.map((s) => `<option value="${s[1]}">${s[0]} (ص ${ad(s[1])})</option>`).join("");
+  }
+  function readForm() {
+    return { name: $("fName").value.trim(), last: Math.round(+$("fLast").value), per: Math.round(+$("fPer").value),
+      rev: Math.round(+$("fRev").value), rabt: Math.round(+$("fRabt").value), start: Math.round(+$("fStart").value) };
+  }
+  function validate(v) {
+    if (!v.name) return "اكتب اسمك.";
+    if (!(v.last >= 0 && v.last <= 603)) return "آخر صفحة حفظتها لازم تكون بين ٠ و٦٠٣.";
+    if (!(v.start >= 1 && v.start <= 604)) return "أول صفحة بدأت منها لازم تكون بين ١ و٦٠٤.";
+    if (v.last > 0 && v.start > v.last) return "أول صفحة بدأت منها لازم تكون قبل آخر صفحة حفظتها أو تساويها.";
+    if (!(v.per >= 1 && v.per <= 20)) return "الحفظ اليومي بين ١ و٢٠ صفحة.";
+    if (!(v.rev >= 0 && v.rev <= 60)) return "المراجعة اليومية بين ٠ و٦٠ صفحة.";
+    if (!(v.rabt >= 0 && v.rabt <= 60)) return "الربط اليومي بين ٠ و٦٠ صفحة.";
+    return "";
+  }
+  function updateForm() {
+    const v = readForm(), last = isNaN(v.last) ? 0 : v.last;
+    $("fWhere").textContent = last >= TOTAL ? "أتممت الحفظ" : (last >= 0 && last < TOTAL) ? "تكمل من صفحة " + ad(last + 1) + " · سورة " + surahAt(last + 1) : "";
+    const el = $("preview");
+    if (!(v.per >= 1 && v.per <= 20) || !(last >= 0 && last <= 603)) { el.textContent = "أدخل بياناتك لتظهر لك مدة الختمة."; return; }
+    const est = estimate(last, v.per, isoOf(new Date())), days = diffDays(est.date, isoOf(new Date()));
+    el.innerHTML = `بهذا الحفظ تختم بعد <b>${daysW(days)}</b> تقريبًا (نحو ${weeksW(Math.max(1, Math.ceil(days / 7)))}).<br><span class="small muted">تنتهي في ${fmtDate(est.date, "islamic-umalqura")} · ${fmtDate(est.date, "gregory")}. الحفظ واجب الأحد إلى الأربعاء، واختياري الخميس والجمعة والسبت.</span>`;
+  }
+  function openForm(mode) {
+    formMode = mode; view = "form"; confirmReset = false;
+    const p = S.profile;
+    $("formTitle").textContent = mode === "new" ? "أهلًا بك في ختمتي" : "بياناتي";
+    $("formLead").textContent = mode === "new" ? "سجّل بياناتك لنجهّز لك خطة الحفظ والمراجعة والربط. بياناتك تُحفظ في جوالك فقط." : "عدّل بياناتك. تغيير الحفظ اليومي أو آخر صفحة يبدأ حساب الخطة من اليوم.";
+    $("fName").value = p ? p.name : ""; $("fLast").value = p ? p.last : 0; $("fStart").value = p ? p.start : 1;
+    $("fPer").value = p ? p.perDay : 1; $("fRev").value = p ? p.rev : 5; $("fRabt").value = p ? p.rabt : 3;
+    $("fSurah").value = ""; $("formErr").textContent = "";
+    $("formBtn").textContent = mode === "new" ? "ابدأ الخطة" : "حفظ التعديلات";
+    $("formCancel").hidden = mode === "new";
+    updateForm(); render(); window.scrollTo(0, 0);
+  }
+  function submitForm(ev) {
+    ev.preventDefault();
+    const v = readForm(), err = validate(v);
+    if (err) { $("formErr").textContent = err; return; }
+    const today = isoOf(new Date());
+    if (formMode === "new" || !S.profile) {
+      S = blank();
+      S.profile = { name: v.name, last: v.last, start: v.start, perDay: v.per, rev: v.rev, rabt: v.rabt, created: today };
+      S.plan = { start: today, base: v.last }; S.revPtr = v.start;
+    } else {
+      const p = S.profile, changed = p.perDay !== v.per || p.last !== v.last;
+      if (p.last !== v.last) { const L = S.log[today]; if (L) { delete L.h; delete L.hp; } }
+      p.name = v.name; p.last = v.last; p.start = v.start; p.perDay = v.per; p.rev = v.rev; p.rabt = v.rabt;
+      if (changed) S.plan = { start: today, base: v.last };
+      if (S.revPtr < p.start) S.revPtr = p.start;
+    }
+    view = "home"; sync(); persist(); render(); window.scrollTo(0, 0); checkNotify();
   }
 
-  /* ---------- setup view ---------- */
-  function openSetup(fromPlan) {
-    $("setup").hidden = false; $("main").hidden = true;
-    $("setupTitle").textContent = fromPlan ? "خطة ختم جديدة" : "ابدأ خطة الختم";
-    $("cancelSetup").hidden = !fromPlan;
-    $("startInput").value = isoOf(new Date());
-    $("pageInputSetup").value = 0;
-    setDays(30);
-    $("setupErr").textContent = "";
-    window.scrollTo(0, 0);
+  /* ---------- notifications ---------- */
+  function buildNote() {
+    const c = compute(), st = streakInfo(c), name = S.profile.name || "";
+    if (c.ok) return { today: c.today, title: "بارك الله فيك يا " + name, body: "أنجزت ورد اليوم. ستريكك " + daysW(st.cur) + "." };
+    const parts = [], L = c.L;
+    if (c.hifz && !L.h) parts.push("الحفظ: " + rangeShort(c.hifz) + (c.hReq ? "" : " (اختياري)"));
+    if (c.rev && !L.v) parts.push("المراجعة: " + rangeShort(c.rev));
+    if (c.rabt && !L.b) parts.push("الربط: " + rangeShort(c.rabt));
+    return { today: c.today, title: "ورد اليوم ينتظرك يا " + name, body: parts.join(" · ") + (st.cur > 0 ? " · لا تضيّع ستريك " + daysW(st.cur) : "") };
   }
-  function setDays(n) {
-    setupDays = n;
-    $("daysInput").value = n;
-    var btns = document.querySelectorAll("#presets .preset");
-    for (var i = 0; i < btns.length; i++) btns[i].setAttribute("aria-pressed", String(+btns[i].getAttribute("data-days") === n));
-    updatePreview();
+  function showNote(custom) {
+    const n = custom || buildNote();
+    const opts = { body: n.body, icon: "icon-192.png", badge: "icon-192.png", tag: "daily-" + n.today, lang: "ar", dir: "rtl" };
+    const fallback = () => { try { new Notification(n.title, opts); } catch (e) {} };
+    if (navigator.serviceWorker && navigator.serviceWorker.ready) navigator.serviceWorker.ready.then((reg) => reg.showNotification(n.title, opts)).catch(fallback);
+    else fallback();
   }
-  function readSetup() {
-    return { days: Math.round(+$("daysInput").value), start: $("startInput").value, startPage: Math.round(+$("pageInputSetup").value || 0) };
+  function checkNotify() {
+    if (!S || !S.profile || !S.notif.on || !("Notification" in window) || Notification.permission !== "granted") return;
+    const now = new Date(), today = isoOf(now);
+    if (now.getHours() >= NOTIFY_HOUR && S.notif.last !== today) { S.notif.last = today; persist(); showNote(); }
   }
-  function updatePreview() {
-    var v = readSetup(), el = $("preview");
-    if (!(v.days >= 3 && v.days <= 365) || !v.start || !(v.startPage >= 0 && v.startPage < TOTAL)) {
-      el.textContent = "أدخل عدد أيام بين ٣ و٣٦٥ وتاريخ بداية صحيحًا."; return;
-    }
-    var perDay = Math.ceil((TOTAL - v.startPage) / v.days);
-    var end = addDays(v.start, v.days - 1);
-    el.innerHTML = 'ورد يومي <b>' + ad(perDay) + '</b> ' + (perDay >= 3 && perDay <= 10 ? 'صفحات' : 'صفحة') +
-      ' تقريبًا، أي نحو ' + pagesW(Math.max(1, Math.round(perDay / 5))) + ' بعد كل صلاة.<br>' +
-      '<span class="small muted">تنتهي في ' + fmtDate(end, "islamic-umalqura") + ' · ' + fmtDate(end, "gregory") + '</span>';
+  function registerPeriodic() {
+    if (!navigator.serviceWorker) return;
+    navigator.serviceWorker.ready.then((reg) => {
+      if (!reg.periodicSync || !navigator.permissions) return;
+      return navigator.permissions.query({ name: "periodic-background-sync" }).then((st) => {
+        if (st.state === "granted") return reg.periodicSync.register("khatma-daily", { minInterval: 6 * 3600 * 1000 });
+      });
+    }).catch(() => {});
+  }
+  function unregisterPeriodic() {
+    if (!navigator.serviceWorker) return;
+    navigator.serviceWorker.ready.then((reg) => reg.periodicSync && reg.periodicSync.unregister("khatma-daily")).catch(() => {});
+  }
+  function notifOn() {
+    if (!("Notification" in window)) { notifMsg = "هذا المتصفح ما يدعم الإشعارات."; render(); return; }
+    Notification.requestPermission().then((perm) => {
+      if (perm === "granted") {
+        S.notif.on = true; const now = new Date();
+        if (now.getHours() >= NOTIFY_HOUR) S.notif.last = isoOf(now);
+        notifMsg = ""; persist(); registerPeriodic();
+        showNote({ today: isoOf(now) + "-test", title: "تم تفعيل التذكير", body: "يصلك كل يوم الساعة ٥ عصرًا ورد اليوم." });
+      } else notifMsg = "ما تم السماح بالإشعارات. تقدر تستخدم تذكير التقويم.";
+      render();
+    }).catch(() => { notifMsg = "تعذّر تفعيل الإشعارات."; render(); });
+  }
+  function notifOff() { S.notif.on = false; notifMsg = ""; persist(); unregisterPeriodic(); render(); }
+  function downloadIcs() {
+    const now = new Date(), d = isoOf(now).replace(/-/g, "");
+    const stamp = now.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+    const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Khatma//AR", "CALSCALE:GREGORIAN", "BEGIN:VEVENT",
+      "UID:khatma-daily-reminder@khatma", "DTSTAMP:" + stamp, "DTSTART:" + d + "T170000", "DURATION:PT15M", "RRULE:FREQ=DAILY",
+      "SUMMARY:ورد الحفظ اليومي", "DESCRIPTION:افتح ختمتي وأنجز الحفظ والمراجعة والربط",
+      "BEGIN:VALARM", "TRIGGER:PT0M", "ACTION:DISPLAY", "DESCRIPTION:ورد الحفظ اليومي", "END:VALARM", "END:VEVENT", "END:VCALENDAR"];
+    try {
+      const url = URL.createObjectURL(new Blob([lines.join("\r\n")], { type: "text/calendar;charset=utf-8" }));
+      const a = document.createElement("a"); a.href = url; a.download = "khatma-reminder.ics";
+      document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 4000);
+      notifMsg = "تم تنزيل ملف التذكير. افتحه ليُضاف إلى التقويم.";
+    } catch (e) { notifMsg = "تعذّر إنشاء ملف التقويم."; }
+    render();
   }
 
   /* ---------- events ---------- */
-  document.addEventListener("click", function (ev) {
-    var t = ev.target.closest ? ev.target.closest("[data-act],.preset,#cancelSetup") : null;
-    if (!t) return;
-    if (t.classList.contains("preset")) { setDays(+t.getAttribute("data-days")); return; }
-    if (t.id === "cancelSetup") { render(); return; }
-    var act = t.getAttribute("data-act");
-    if (!S.plan && act !== "new") return;
-    var c = S.plan ? compute() : null;
-    if (act === "complete") { if (c.idx >= 0) setPage(c.end); }
-    else if (act === "undo") { setPage(c.startToday); }
-    else if (act === "setpage") { var inp = $("pageInput"); if (inp) setPage(inp.value); }
-    else if (act === "askNew") { confirming = true; render(); }
-    else if (act === "keep") { confirming = false; render(); }
-    else if (act === "new") { confirming = false; openSetup(!!S.plan); }
+  document.addEventListener("click", (ev) => {
+    const t = ev.target.closest ? ev.target.closest("[data-act]") : null;
+    if (t && S && S.profile) {
+      const a = t.getAttribute("data-act");
+      if (a === "edit") { openForm("edit"); return; }
+      if (a === "askReset") { confirmReset = true; render(); return; }
+      if (a === "keep") { confirmReset = false; render(); return; }
+      if (a === "reset") { try { localStorage.removeItem(KEY); } catch (e) {} unregisterPeriodic(); S = blank(); confirmReset = false; openForm("new"); return; }
+      if (a === "notifOn") { notifOn(); return; }
+      if (a === "notifOff") { notifOff(); return; }
+      if (a === "ics") { downloadIcs(); return; }
+      act(a, t);
+    }
   });
-  $("daysInput").addEventListener("input", function () {
-    var n = Math.round(+this.value); setupDays = n;
-    var btns = document.querySelectorAll("#presets .preset");
-    for (var i = 0; i < btns.length; i++) btns[i].setAttribute("aria-pressed", String(+btns[i].getAttribute("data-days") === n));
-    updatePreview();
-  });
-  $("startInput").addEventListener("input", updatePreview);
-  $("pageInputSetup").addEventListener("input", updatePreview);
-  $("setup").addEventListener("submit", function (ev) {
-    ev.preventDefault();
-    var v = readSetup(), err = $("setupErr");
-    if (!(v.days >= 3 && v.days <= 365)) { err.textContent = "عدد الأيام يجب أن يكون بين ٣ و٣٦٥."; return; }
-    if (!v.start) { err.textContent = "اختر تاريخ البداية."; return; }
-    if (!(v.startPage >= 0 && v.startPage < TOTAL)) { err.textContent = "الصفحة يجب أن تكون بين ٠ و٦٠٣."; return; }
-    S = { plan: { start: v.start, days: v.days, startPage: v.startPage }, page: v.startPage, log: {}, updated: 0 };
-    persist();
-    render();
-    window.scrollTo(0, 0);
-  });
+  $("formCancel").addEventListener("click", () => { view = "home"; render(); });
+  $("form").addEventListener("submit", submitForm);
+  ["fName", "fLast", "fPer", "fRev", "fRabt", "fStart"].forEach((id) => $(id).addEventListener("input", updateForm));
+  $("fSurah").addEventListener("change", function () { const v = +this.value; if (v) { $("fLast").value = v - 1; updateForm(); } });
+
+  setInterval(() => {
+    if (!S || !S.profile) return;
+    checkNotify();
+    const key = isoOf(new Date()) + "|" + (new Date().getHours() >= NOTIFY_HOUR);
+    if (key !== shownKey && view === "home") { sync(); persist(); render(); }
+  }, 30000);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden && S && S.profile) { checkNotify(); if (view === "home") { sync(); persist(); render(); } } });
 
   /* ---------- init ---------- */
-  readLocal();
-  renderDates();
-  if (!S.plan) openSetup(false); else render();
+  fillSurahs(); load();
+  if (!S.profile) openForm("new");
+  else { view = "home"; sync(); persist(); render(); checkNotify(); }
 })();
 </script>
-
 <script>
 if ("serviceWorker" in navigator) {
-  window.addEventListener("load", function () {
-    navigator.serviceWorker.register("sw.js").catch(function () {});
-  });
+  window.addEventListener("load", function () { navigator.serviceWorker.register("sw.js").catch(function () {}); });
 }
 </script>
 </body>
